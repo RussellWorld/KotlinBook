@@ -6,9 +6,11 @@ var playGold = 10
 var playSilver = 10
 
 val patronList = mutableListOf("Eli", "Mordoc", "Sophie")
+val lastName = listOf("Ironfoot", "Fernsworth", "Baggins")
+val uniqeePatrons = mutableSetOf<String>()
 val menuList = File("data/tavern-menu-items.txt")
     .readText()
-    .split("\n")
+    .split("|")
 
 fun main() {
 
@@ -23,15 +25,22 @@ fun main() {
         println("The tavern master says : No, they departed hours ago.")
 
 
-    patronList.forEachIndexed{index, patron ->
-        println("Good evening, $patron - you're #${index + 1} in line")
-        placeOrder(patron, menuList.shuffled().first())
+    (0..9).forEach {
+        val first = patronList.shuffled().first()
+        val lastName = lastName.shuffled().last()
+        val name = "$first $lastName"
+        uniqeePatrons += name
     }
+    println(uniqeePatrons)
 
-    menuList.forEachIndexed{index, data ->
-        println("${index}: $data")
+    var orderCount = 0
+    while (orderCount <= 9) {
+        placeOrder(
+            uniqeePatrons.shuffled().first(),
+            menuList.shuffled().last()
+        )
+        orderCount++
     }
-
 }
 
 fun performPurchase(price: Double) {
@@ -75,15 +84,18 @@ fun placeOrder(patronName: String, menuData: String) {
     val tavernMaster = TAVERN_NAME.substring(0 until indexOfApostrophe)
     println("$patronName speaks with $tavernMaster about their order.")
 
-    val (type, name, price) = menuData.split(",")
-    val message = "$patronName buys a $name ($type) for $price."
+    val (type, name, price) = menuData.split(',')
+    val message = "$patronName buys a $name ($type) for $price "
+
     println(message)
 
 //    performPurchase(price.toDoubleOrNull() ?: 0.0)
 
-    val pharse = if (name == "Dragon's Breath")
+    val pharse = if (name == "Dragon's Breath") {
         "$patronName exclaims: ${toDragonsSpeak("Ah, delicious $name!")}"
-    else "$patronName says: Thanks for the $name."
+    } else {
+        "$patronName says: Thanks for the $name."
+    }
     println(pharse)
 
 
