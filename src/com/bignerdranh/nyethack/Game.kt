@@ -4,8 +4,9 @@ fun main() {
 
     val player = Player("Bob")
     player.castFireball(4)
-    //Аура
-    player.auraColor()
+    var currentRoom = TownSquare()
+    println(currentRoom.description())
+    println(currentRoom.load())
     //Состояние игрока
     printPlayerStatus(player)
 
