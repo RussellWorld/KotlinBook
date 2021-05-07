@@ -1,13 +1,36 @@
+import java.io.File
 import kotlin.math.roundToInt
 
 const val TAVERN_NAME = "Taernyl's Folly"
 var playGold = 10
 var playSilver = 10
 
+val patronList = mutableListOf("Eli", "Mordoc", "Sophie")
+val menuList = File("data/tavern-menu-items.txt")
+    .readText()
+    .split("\n")
 
 fun main() {
 
-    placeOrder("shandy,Dragon's Breath,5.91")
+    if (patronList.contains("Eli")) {
+        println("The tavern master says: Eli's in the back playing cards.")
+    } else
+        println("The tavern master says : Eli isn't there.")
+
+    if (patronList.containsAll(listOf("Sophie", "Mordoc"))) {
+        println("The tavern master says: Yea, they're seated by the stew kettle.")
+    } else
+        println("The tavern master says : No, they departed hours ago.")
+
+
+    patronList.forEachIndexed{index, patron ->
+        println("Good evening, $patron - you're #${index + 1} in line")
+        placeOrder(patron, menuList.shuffled().first())
+    }
+
+    menuList.forEachIndexed{index, data ->
+        println("${index}: $data")
+    }
 
 }
 
@@ -47,21 +70,21 @@ private fun toDragonsSpeak(pharse: String) =
         }
     }
 
-fun placeOrder(menuData: String) {
+fun placeOrder(patronName: String, menuData: String) {
     val indexOfApostrophe = TAVERN_NAME.indexOf('\'')
     val tavernMaster = TAVERN_NAME.substring(0 until indexOfApostrophe)
-    println("Madrigal speaks with $tavernMaster about their order.")
+    println("$patronName speaks with $tavernMaster about their order.")
 
     val (type, name, price) = menuData.split(",")
-    val message = "Madrigal buys a $name ($type) for $price."
+    val message = "$patronName buys a $name ($type) for $price."
     println(message)
 
-    performPurchase(price.toDoubleOrNull() ?: 0.0)
+//    performPurchase(price.toDoubleOrNull() ?: 0.0)
 
     val pharse = if (name == "Dragon's Breath")
-        "Madrigal exclaims: ${toDragonsSpeak("Ah, delicious $name!")}"
-    else "Madrigal says: Thanks for the $name."
-    print(pharse)
+        "$patronName exclaims: ${toDragonsSpeak("Ah, delicious $name!")}"
+    else "$patronName says: Thanks for the $name."
+    println(pharse)
 
 
 }
