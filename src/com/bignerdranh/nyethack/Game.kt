@@ -1,22 +1,76 @@
 package com.bignerdranh.nyethack
 
+import java.lang.Exception
+import java.lang.IllegalStateException
+
 fun main() {
 
-    val player = Player("Bob")
-    player.castFireball(4)
-    var currentRoom = TownSquare()
-    println(currentRoom.description())
-    println(currentRoom.load())
-    //Состояние игрока
-    printPlayerStatus(player)
+    Game.play()
+}
 
+object Game {
+    private val player = Player("Bob")
+    private var currentRoom: Room = TownSquare()
+
+    init {
+        println("Welcome, adventurer")
+    }
+
+    fun play() {
+        while (true) {
+            println(currentRoom.description())
+            println(currentRoom.load())
+
+            printPlayerStatus(player)
+
+            print("> Enter your command: ")
+            println(GameInput(readLine()).processCommand())
+        }
+
+    }
+
+    private class GameInput(arg: String?) {
+        private val input = arg ?: ""
+        val command = input.split(" ")[0]
+        val argument = input.split(" ").getOrElse(1, { "" })
+
+        fun processCommand() = when (command.toLowerCase()) {
+            "move" -> move(argument)
+            else -> commandNotFound()
+        }
+
+        private fun commandNotFound() = "I'm not quite sure what you're trying to do! "
+    }
+
+    private fun printPlayerStatus(player: Player) {
+        println("(Aura: ${player.auraColor()})\n(Blessed: ${if (player.blessed) "YES" else "NO"})")
+        println("${player.name} ${player.formatHealthStatus()}")
+    }
+
+    private var worldMap = listOf(
+        listOf(currentRoom, Room("Tavern"), Room("Back Room")),
+        listOf(Room("Long Corridor"), Room("Generic Room"))
+    )
+
+    private fun move(directionInput: String) =
+        try {
+            val direction = Direction.valueOf(directionInput.toUpperCase())
+            val newPosition = direction.updateCoordinate(player.currentPosition)
+            if (!newPosition.isInBounds) {
+                throw IllegalStateException("$direction is out of bounds.")
+            }
+
+            val newRoom = worldMap[newPosition.y][newPosition.x]
+            player.currentPosition = newPosition
+            currentRoom = newRoom
+            "Ok, you move $direction to the ${newRoom.name}.\n${newRoom.load()}"
+        } catch (e: Exception) {
+            "Invalid direction: $directionInput."
+        }
 }
 
 
-private fun printPlayerStatus(player: Player) {
-    println("(Aura: ${player.auraColor()})  (Blessed: ${if (player.blessed) "YES" else "NO"})")
-    println("${player.name} ${player.formatHealthStatus()}")
-}
+
 
 
 

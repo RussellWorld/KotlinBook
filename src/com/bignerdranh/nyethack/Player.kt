@@ -9,7 +9,7 @@ class Player(
     var immortal: Boolean
 ) {
     var name = name
-        get() = "${field.capitalize()} of $hometown"
+        get() = "${field.capitalize()} of $homeTown"
         private set(value) {
             field = value.trim()
         }
@@ -27,7 +27,8 @@ class Player(
         require(name.isNotBlank()) { "player must have a name." }
     }
 
-    val hometown by lazy { selectHometown() }
+    private val homeTown by lazy { selectHometown() }
+    var currentPosition = Coordinate(0,0)
 
     fun auraColor(): String {
         val auraVisible = blessed && healthPoint > 50 || immortal
@@ -45,15 +46,6 @@ class Player(
     fun castFireball(numFireballs: Int = 2) =
         println("A glass of Fireball springs into existence. ($numFireballs)")
 
-    fun whatRace(race: String) {
-        val faction = when (race) {
-            "gnome" -> "Keepers of the Mines"
-            "dwarf" -> "Keepers of the Mines"
-            "orc" -> "Free People of the Rolling Hills"
-            "human" -> "Free People of the Rolling Hills"
-            else -> "Error race"
-        }
-    }
 
     private fun selectHometown() = File("data/towns.txt")
         .readText()
