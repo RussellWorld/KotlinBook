@@ -23,3 +23,6 @@ fun proficiencyCheck(swordsJuggler: Int?) {
 fun juggleSword(swordsJuggling: Int){
     require(swordsJuggling >= 3, {" Juggle at least 3 swords to be exciting."})
 }
+
+//class UnskilledSwordJuggerException() :
+//    IllegalStateException("com.bignerdranh.nyethack.Player cannot juggle swords")

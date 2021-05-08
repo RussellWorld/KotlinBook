@@ -8,8 +8,8 @@ open class Room(val name: String) {
 }
 
 class TownSquare : Room("Town Square") {
-    private val belSound = "GONG!"
+    private val belsound = "GONG!"
     override val dangerLevel = super.dangerLevel - 3
     final override fun load() = "The villagers rally and cheer as you enter!\n${ringBell()}"
-    private fun ringBell() = "The bell tower announces your arrival.  $belSound"
+    private fun ringBell() = "The bell tower announces your arrival.  $belsound"
 }
